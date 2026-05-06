@@ -33,17 +33,34 @@ app.set('views', path.join(__dirname, 'src/views'));
 
 app.get('/', async (req, res) => {
     const title = 'Home';
-    res.render('home', { title });
+    res.render('home', { 
+        title,
+        activePage: 'home'
+    });
 });
 
 app.get('/organizations', async (req, res) => {
     const title = 'Our Partner Organizations';
-    res.render('organizations', { title });
+    res.render('organizations', { 
+        title,
+        activePage: 'organizations'
+    });
 });
 
 app.get('/projects', async (req, res) => {
     const title = 'Service Projects';
-    res.render('projects', { title });
+    res.render('projects', { 
+        title,
+        activePage: 'projects'
+    });
+});
+
+app.get('/categories', async (req, res) => {
+    const title = 'Service Project Categories';
+    res.render('categories', { 
+        title,
+        activePage: 'categories'
+    });
 });
 
 /**

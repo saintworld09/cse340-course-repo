@@ -8,9 +8,13 @@
 </head>
 <body>
     <nav>
-        <ul>
-            <li><a href="/">Home</a></li>
-            <li><a href="/organizations">Organizations</a></li>
-            <li><a href="/projects">Projects</a></li>
-        </ul>
+    <ul>
+        <li><a href="/" class="<%= activePage === 'home' ? 'active' : '' %>">Home</a></li>
+
+        <li><a href="/organizations" class="<%= activePage === 'organizations' ? 'active' : '' %>">Organizations</a></li>
+
+        <li><a href="/projects" class="<%= activePage === 'projects' ? 'active' : '' %>">Projects</a></li>
+
+        <li><a href="/categories" class="<%= activePage === 'categories' ? 'active' : '' %>">Categories</a></li>
+    </ul>
     </nav>
