@@ -2,6 +2,7 @@
   "name": "cse340-course-repo",
   "version": "1.0.0",
   "description": "This project is for my BYU CSE340 web backend development course",
+  "type": "module",
   "main": "server.js",
   "scripts": {
     "dev": "nodemon",
