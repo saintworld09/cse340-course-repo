@@ -10,10 +10,19 @@
             <li>
                 <img 
                     src="/images/<%= organization.logo_filename %>" 
-                    alt="<%= organization.name %> logo"
+                    alt="<%= organization.organization_name %> logo"
                 >
-                <strong><%= organization.name %></strong>: 
-                <%= organization.contact_email %>
+                 <strong>
+                    <%= organization.organization_name %>
+                </strong>
+
+                <p>
+                    <%= organization.organization_description %>
+                </p>
+
+                <p>
+                    <%= organization.contact_email %>
+                </p>
             </li>
         <% }); %>
     </ul>
