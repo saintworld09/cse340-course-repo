@@ -1,13 +1,28 @@
 <%- include('partials/header') %>
-    <main>
-        <h1><%= title %></h1>
-        <h1>Projects</h1>
-        <p><h2>Upcoming Service Projects</h2>
-            <ul>
-                <li>Park Cleanup - Join us to clean up local parks and make them beautiful!</li>
-                <li>Food Drive - Help collect and distribute food to those in need.</li>
-                <li>Community Tutoring - Volunteer to tutor students in various subjects.</li>
-            </ul>
-        </p>
-    </main>
+
+<main>
+    <h1><%= title %></h1>
+
+    <% if (projects && projects.length > 0) { %>
+        <ul>
+            <% projects.forEach(project => { %>
+                <li>
+                    <strong><%= project.title %></strong>:
+                    Sponsored by <%= project.organization_name %>
+                    on 
+                    <%= new Date(project.date).toLocaleDateString('en-GB', {
+                        year: 'numeric',
+                        month: 'long',
+                        day: 'numeric'
+                    }) %>
+                    in <%= project.location %>
+                </li>
+            <% }) %>
+        </ul>
+    <% } else { %>
+        <p>No projects available.</p>
+    <% } %>
+
+</main>
+
 <%- include('partials/footer') %>

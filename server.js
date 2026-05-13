@@ -8,6 +8,9 @@ import { testConnection } from './src/models/db.js';
 // Import organizations model
 import { getAllOrganizations } from './src/models/organizations.js';
 
+// Import projects model
+import { getAllProjects } from './src/models/projects.js';
+
 // Define the application environment
 const NODE_ENV = process.env.NODE_ENV?.toLowerCase() || 'production';
 
@@ -58,10 +61,15 @@ app.get('/organizations', async (req, res) => {
 });
 
 app.get('/projects', async (req, res) => {
+    const projects = await getAllProjects();
+
+    console.log(projects); // 🔍 verify database output
+
     const title = 'Service Projects';
 
     res.render('projects', {
         title,
+        projects,
         activePage: 'projects'
     });
 });
