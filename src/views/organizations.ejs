@@ -7,26 +7,31 @@
 
     <ul>
         <% organizations.forEach(organization => { %>
+
             <li>
                 <img 
                     src="/images/<%= organization.logo_filename %>" 
                     alt="<%= organization.organization_name %> logo"
+                    width="100"
                 >
-                 <strong>
-                    <%= organization.organization_name %>
-                </strong>
+
+                <h2>
+                    <a href="/organization/<%= organization.organization_id %>">
+                        <%= organization.organization_name %>
+                    </a>
+                </h2>
 
                 <p>
                     <%= organization.organization_description %>
                 </p>
 
                 <p>
-                    <%= organization.contact_email %>
+                    Contact: <%= organization.contact_email %>
                 </p>
             </li>
-        <% }); %>
-    </ul>
 
+        <% }) %>
+    </ul>
 </main>
 
 <%- include('partials/footer') %>
