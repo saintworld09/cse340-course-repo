@@ -1,5 +1,6 @@
 import { Pool } from 'pg';
 
+
 /**
  * Connection pool for PostgreSQL database.
  * 
@@ -12,10 +13,10 @@ import { Pool } from 'pg';
  * postgresql://username:password@host:port/database
  */
 const pool = new Pool({
-    connectionString: process.env.DATABASE_URL,
-    ssl: {
-        rejectUnauthorized: false
-    }
+  connectionString: process.env.DATABASE_URL,
+  ssl: {
+    rejectUnauthorized: false,
+  },
 });
 
 /**
