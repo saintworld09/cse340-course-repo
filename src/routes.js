@@ -8,6 +8,12 @@ import {
     showOrganizationDetailsPage
 } from './controllers/organizations.js';
 
+import { showProjectDetailsPage } 
+from './controllers/projects.js';
+
+import { showCategoryDetailsPage }
+from './controllers/categories.js';
+
 import { showProjectsPage }
 from './controllers/projects.js';
 
@@ -16,6 +22,7 @@ from './controllers/categories.js';
 
 import { testErrorPage }
 from './controllers/errors.js';
+
 
 const router = express.Router();
 
@@ -34,6 +41,14 @@ router.get('/categories',
 // Organization details route
 router.get('/organization/:id',
     showOrganizationDetailsPage);
+
+// Project details route
+router.get('/project/:id',
+    showProjectDetailsPage);
+
+// Category details route
+router.get('/category/:id', 
+    showCategoryDetailsPage);
 
 // Error testing route
 router.get('/test-error',

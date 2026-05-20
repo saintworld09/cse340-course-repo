@@ -1,0 +1,34 @@
+<%- include('partials/header') %>
+
+<main>
+    <h1><%= title %></h1>
+
+    <h2><%= project.title %></h2>
+
+    <p><strong>Description:</strong> <%= project.description %></p>
+
+    <p><strong>Date:</strong> <%= project.date %></p>
+
+    <p><strong>Location:</strong> <%= project.location %></p>
+
+    <p>
+        <strong>Organization:</strong>
+        <a href="/organization/<%= project.organization_id %>">
+            <%= project.organization_name %>
+        </a>
+    </p>
+
+    <h3>Categories</h3>
+
+    <div>
+    <% categories.forEach(cat => { %>
+        <a href="/category/<%= cat.category_id %>">
+        <span style="padding:5px; border:1px solid #ccc; margin-right:5px;">
+            <%= cat.category_name %>
+        </span>
+        </a>
+    <% }) %>
+    </div>
+</main>
+
+<%- include('partials/footer') %>
