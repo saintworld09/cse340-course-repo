@@ -1,0 +1,65 @@
+<%- include('partials/header') %>
+
+<main class="form-page">
+
+    <div class="form-card">
+
+        <h1 class="form-title"><%= title %></h1>
+
+        <form action="/edit-organization/<%= organizationDetails.organization_id %>" method="POST">
+
+            <div class="form-group">
+                <label>Organization Name</label>
+                <input
+                    type="text"
+                    name="name"
+                    value="<%= organizationDetails.organization_name %>"
+                    required
+                    maxlength="150"
+                />
+            </div>
+
+            <div class="form-group">
+                <label>Description</label>
+                <textarea
+                    name="description"
+                    required
+                    maxlength="500"
+                ><%= organizationDetails.organization_description %></textarea>
+            </div>
+
+            <div class="form-group">
+                <label>Contact Email</label>
+                <input
+                    type="email"
+                    name="contactEmail"
+                    value="<%= organizationDetails.contact_email %>"
+                    required
+                />
+            </div>
+
+            <div class="form-group">
+                <label>Logo Filename</label>
+                <input
+                    type="text"
+                    name="logoFilename"
+                    value="<%= organizationDetails.logo_filename %>"
+                    required
+                />
+            </div>
+
+            <button type="submit" class="primary-btn">
+                Update Organization
+            </button>
+
+            <a href="/organization/<%= organizationDetails.organization_id %>" class="back-link">
+                ← Back to Organization
+            </a>
+
+        </form>
+
+    </div>
+
+</main>
+
+<%- include('partials/footer') %>

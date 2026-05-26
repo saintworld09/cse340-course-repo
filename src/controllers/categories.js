@@ -2,8 +2,14 @@
 import {
     getAllCategories,
     getCategoryById,
-    getProjectsByCategoryId
+    getProjectsByCategoryId,
+    getCategoriesByProjectId,
+    updateCategoryAssignments,
+    createCategory,
+    updateCategory
 } from '../models/categories.js';
+
+import { getProjectDetails } from '../models/projects.js';
 
 // =========================
 // SHOW ALL CATEGORIES PAGE
@@ -35,8 +41,197 @@ const showCategoryDetailsPage = async (req, res) => {
     });
 };
 
+const showAssignCategoriesForm = async (req, res) => {
+
+    const projectId = req.params.projectId;
+
+    const projectDetails = await getProjectDetails(projectId);
+
+    const categories = await getAllCategories();
+
+    const assignedCategories =
+        await getCategoriesByProjectId(projectId);
+
+    const title = 'Assign Categories to Project';
+
+    res.render('assign-categories', {
+        title,
+        projectId,
+        projectDetails,
+        categories,
+        assignedCategories,
+        activePage: 'projects'
+    });
+};
+
+const showNewCategoryForm = (req, res) => {
+
+    res.render('new-category', {
+        title: 'Create New Category',
+        activePage: 'categories',
+        errors: [],
+        formData: {}
+    });
+};
+
+
+const processNewCategoryForm = async (req, res) => {
+
+    try {
+
+        const { category_name } = req.body;
+
+        const errors = [];
+
+        if (!category_name || category_name.trim() === '') {
+            errors.push('Category name is required.');
+        }
+
+        if (category_name.length > 100) {
+            errors.push('Category name must not exceed 100 characters.');
+        }
+
+        if (category_name.length < 3) {
+            errors.push('Category name must be at least 3 characters.');
+        }
+
+        if (errors.length > 0) {
+
+            return res.render('new-category', {
+                title: 'Create New Category',
+                activePage: 'categories',
+                errors,
+                formData: req.body
+            });
+        }
+
+        await createCategory(category_name);
+
+        req.flash('success', 'Category created successfully.');
+
+        res.redirect('/categories');
+
+    } catch (error) {
+
+        console.error(error);
+
+        req.flash('error', 'Unable to create category.');
+
+        res.redirect('/new-category');
+    }
+};
+
+const showEditCategoryForm = async (req, res) => {
+
+    try {
+
+        const categoryId = req.params.id;
+
+        const category = await getCategoryById(categoryId);
+
+        res.render('edit-category', {
+            title: 'Edit Category',
+            activePage: 'categories',
+            category,
+            errors: []
+        });
+
+    } catch (error) {
+
+        console.error(error);
+
+        req.flash('error', 'Unable to load category.');
+
+        res.redirect('/categories');
+    }
+};
+
+const processEditCategoryForm = async (req, res) => {
+
+    try {
+
+        const categoryId = req.params.id;
+
+        const { category_name } = req.body;
+
+        const errors = [];
+
+        if (!category_name || category_name.trim() === '') {
+            errors.push('Category name is required.');
+        }
+
+        if (category_name.length > 100) {
+            errors.push('Category name must not exceed 100 characters.');
+        }
+
+        if (category_name.length < 3) {
+            errors.push('Category name must be at least 3 characters.');
+        }
+
+        if (errors.length > 0) {
+
+            return res.render('edit-category', {
+                title: 'Edit Category',
+                activePage: 'categories',
+                category: {
+                    category_id: categoryId,
+                    category_name
+                },
+                errors
+            });
+        }
+
+        await updateCategory(categoryId, category_name);
+
+        req.flash('success', 'Category updated successfully.');
+
+        res.redirect('/categories');
+
+    } catch (error) {
+
+        console.error(error);
+
+        req.flash('error', 'Unable to update category.');
+
+        res.redirect(`/edit-category/${req.params.id}`);
+    }
+};
+
+
+const processAssignCategoriesForm = async (req, res) => {
+
+    const projectId = req.params.projectId;
+
+    const selectedCategoryIds =
+        req.body.categoryIds || [];
+
+    const categoryIdsArray =
+        Array.isArray(selectedCategoryIds)
+            ? selectedCategoryIds
+            : [selectedCategoryIds];
+
+    await updateCategoryAssignments(
+        projectId,
+        categoryIdsArray
+    );
+
+    req.flash(
+        'success',
+        'Categories updated successfully.'
+    );
+
+    res.redirect(`/project/${projectId}`);
+};
+
+
 // Export controller functions
 export {
     showCategoriesPage,
-    showCategoryDetailsPage
+    showCategoryDetailsPage,
+    showAssignCategoriesForm,
+    processAssignCategoriesForm,
+    showNewCategoryForm,
+    processNewCategoryForm,
+    showEditCategoryForm,
+    processEditCategoryForm
 };

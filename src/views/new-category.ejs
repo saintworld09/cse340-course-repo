@@ -1,0 +1,51 @@
+<%- include('partials/header') %>
+
+<main class="form-page">
+
+    <div class="form-card">
+
+        <div class="form-header">
+            <h1>Create New Category</h1>
+            <p>Add a new category for service projects.</p>
+        </div>
+
+        <% if (errors.length > 0) { %>
+
+            <div class="alert error">
+
+                <% errors.forEach(error => { %>
+                    <p><%= error %></p>
+                <% }) %>
+
+            </div>
+
+        <% } %>
+
+        <form action="/new-category" method="POST">
+
+            <div class="form-group">
+
+                <label for="category_name">Category Name</label>
+
+                <input
+                    type="text"
+                    id="category_name"
+                    name="category_name"
+                    required
+                    maxlength="100"
+                    value="<%= formData.category_name || '' %>"
+                />
+
+            </div>
+
+            <button type="submit" class="btn-submit">
+                Create Category
+            </button>
+
+        </form>
+
+    </div>
+
+</main>
+
+<%- include('partials/footer') %>

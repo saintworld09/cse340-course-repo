@@ -68,6 +68,73 @@ const getProjectsByCategoryId = async (categoryId) => {
     return result.rows;
 };
 
+const assignCategoryToProject = async (projectId, categoryId) => {
+    const query = `
+        INSERT INTO project_categories (
+            project_id,
+            category_id
+        )
+        VALUES ($1, $2);
+    `;
+
+    await db.query(query, [projectId, categoryId]);
+};
+
+const updateCategoryAssignments = async (projectId, categoryIds) => {
+
+    // Remove old category assignments
+    const deleteQuery = `
+        DELETE FROM project_categories
+        WHERE project_id = $1;
+    `;
+
+    await db.query(deleteQuery, [projectId]);
+
+    // Add new category assignments
+    for (const categoryId of categoryIds) {
+        await assignCategoryToProject(projectId, categoryId);
+    }
+};
+
+const createCategory = async (categoryName) => {
+
+    const sql = `
+        INSERT INTO categories (category_name)
+        VALUES ($1)
+        RETURNING category_id;
+    `;
+
+    const result = await db.query(sql, [categoryName]);
+
+    if (result.rows.length === 0) {
+        throw new Error('Failed to create category');
+    }
+
+    return result.rows[0];
+};
+
+
+
+const updateCategory = async (categoryId, categoryName) => {
+
+    const sql = `
+        UPDATE categories
+        SET category_name = $1
+        WHERE category_id = $2
+        RETURNING category_id;
+    `;
+
+    const result = await db.query(sql, [categoryName, categoryId]);
+
+    if (result.rows.length === 0) {
+        throw new Error('Failed to update category');
+    }
+
+    return result.rows[0];
+};
+
+
+
 // =========================
 // EXPORTS
 // =========================
@@ -75,5 +142,8 @@ export {
     getAllCategories,
     getCategoryById,
     getCategoriesByProjectId,
-    getProjectsByCategoryId
+    getProjectsByCategoryId,
+    updateCategoryAssignments,
+    createCategory,
+    updateCategory
 };

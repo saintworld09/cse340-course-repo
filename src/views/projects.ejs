@@ -1,29 +1,51 @@
 <%- include('partials/header') %>
 
-<main>
-    <h1><%= title %></h1>
+<main class="projects-page">
 
-    <ul>
+    <div class="projects-header">
+        <h1>Upcoming Service Projects</h1>
+
+        <div class="page-actions">
+            <a href="/new-project" class="btn-primary">
+                + Add New Project
+            </a>
+        </div>
+    </div>
+
+    <div class="projects-grid">
+
         <% projects.forEach(project => { %>
-            <li>
-                <a href="/project/<%= project.project_id %>">
-                    <%= project.title %>
-                </a>
 
-                — 
+          <a href="/project/<%= project.project_id %>" class="project-link">
 
-                <a href="/organization/<%= project.organization_id %>">
-                    <%= project.organization_name %>
-                </a>
+            <div class="project-card">
 
-                <br>
+                <div class="project-card-content">
 
-                <small>
-                    <%= project.date %> | <%= project.location %>
-                </small>
-            </li>
+                    <h2><%= project.title %></h2>
+
+                    <p class="organization-name">
+                        <%= project.organization_name %>
+                    </p>
+                    
+
+                    <p class="project-date">
+                        <%= new Date(project.date).toDateString() %>
+                    </p>
+
+                    <p class="project-location">
+                        <%= project.location %>
+                    </p>
+
+                </div>
+
+            </div>
+          </a>
+
         <% }) %>
-    </ul>
+
+    </div>
+
 </main>
 
 <%- include('partials/footer') %>

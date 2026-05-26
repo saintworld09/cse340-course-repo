@@ -18,3 +18,21 @@
         <li><a href="/categories" class="<%= activePage === 'categories' ? 'active' : '' %>">Categories</a></li>
     </ul>
     </nav>
+
+    <% const messages = flash(); %>
+
+<% Object.keys(messages).forEach(type => { %>
+
+    <% if (messages[type].length > 0) { %>
+
+        <% messages[type].forEach(msg => { %>
+
+            <div class="alert <%= type %>">
+                <%= msg %>
+            </div>
+
+        <% }) %>
+
+    <% } %>
+
+<% }) %>

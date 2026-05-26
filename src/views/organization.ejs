@@ -1,5 +1,12 @@
 <%- include('partials/header') %>
-
+<div class="org-actions">
+    <a
+        href="/edit-organization/<%= organizationDetails.organization_id %>"
+        class="edit-btn"
+    >
+        ✏️ Edit Organization
+    </a>
+</div>
 <main>
     <h1><%= title %></h1>
 
@@ -24,15 +31,17 @@
     <h3>Service Projects</h3>
 
     <ul>
-        <% projects.forEach(project => { %>
-
-            <li>
-                <a href="/project/<%= project.project_id %>">
-                    <%= project.title %>
-                </a>
-            </li>
-
-        <% }) %>
+        <% if (projects && projects.length > 0) { %>
+            <% projects.forEach(project => { %>
+                <li>
+                    <a href="/project/<%= project.project_id %>">
+                        <%= project.title %>
+                    </a>
+                </li>
+            <% }) %>
+        <% } else { %>
+            <li>No projects available for this organization.</li>
+        <% } %>
     </ul>
 </main>
 

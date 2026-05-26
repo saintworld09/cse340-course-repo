@@ -1,0 +1,55 @@
+<%- include('partials/header') %>
+
+<main class="form-page">
+
+    <div class="form-card">
+
+        <h1 class="form-title"><%= title %></h1>
+
+        <form action="/new-project" method="POST">
+
+            <div class="form-group">
+                <label>Title</label>
+                <input type="text" name="title" required />
+            </div>
+
+            <div class="form-group">
+                <label>Description</label>
+                <textarea name="description" required></textarea>
+            </div>
+
+            <div class="form-group">
+                <label>Location</label>
+                <input type="text" name="location" required />
+            </div>
+
+            <div class="form-group">
+                <label>Date</label>
+                <input type="date" name="date" required />
+            </div>
+
+            <div class="form-group">
+                <label>Organization</label>
+                <select name="organizationId" required>
+                    <option value="">Select Organization</option>
+
+                    <% organizations.forEach(org => { %>
+                        <option value="<%= org.organization_id %>">
+                            <%= org.organization_name %>
+                        </option>
+                    <% }) %>
+
+                </select>
+            </div>
+
+            <button type="submit" class="primary-btn">
+                Create Project
+            </button>
+
+        </form>
+
+    </div>
+
+</main>
+
+<%- include('partials/footer') %>

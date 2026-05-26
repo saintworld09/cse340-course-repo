@@ -1,15 +1,54 @@
 <%- include('partials/header') %>
 
-<main>
-        <ul>
-    <% categories.forEach(category => { %>
-        <li>
-        <a href="/category/<%= category.category_id %>">
-            <%= category.category_name %>
-        </a>
-        </li>
-    <% }) %>
-    </ul>
+<main class="projects-page">
+
+    <div class="projects-header">
+
+        <div>
+            <h1>Categories</h1>
+            <p class="organizations-subtitle">
+                Manage project categories
+            </p>
+        </div>
+
+        <div class="page-actions">
+            <a href="/new-category" class="btn-primary">
+                + Add New Category
+            </a>
+        </div>
+
+    </div>
+
+    <div class="projects-grid">
+
+        <% categories.forEach(category => { %>
+
+            <div class="project-card">
+
+                <div class="project-card-content">
+
+                    <h2>
+                        <%= category.category_name %>
+                    </h2>
+
+                    <div class="project-actions">
+
+                        <a
+                            href="/edit-category/<%= category.category_id %>"
+                            class="btn-secondary-action"
+                        >
+                            ✏️ Edit Category
+                        </a>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        <% }) %>
+
+    </div>
 
 </main>
 

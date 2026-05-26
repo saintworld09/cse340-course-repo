@@ -1,0 +1,45 @@
+<%- include('partials/header') %>
+
+<main class="assign-page">
+
+    <div class="assign-card">
+
+        <h1 class="assign-title">Assign Categories to Project</h1>
+
+        <p class="assign-subtitle">
+            Project:
+            <span class="project-name"><%= projectDetails.title %></span>
+        </p>
+
+        <form action="/assign-categories/<%= projectId %>" method="POST" class="assign-form">
+
+            <div class="category-grid">
+
+                <% categories.forEach(category => { %>
+                    <label class="category-item">
+
+                        <input
+                            type="checkbox"
+                            name="categoryIds"
+                            value="<%= category.category_id %>"
+                            <%= assignedCategories.some(ac => ac.category_id === category.category_id) ? 'checked' : '' %>
+                        />
+
+                        <span><%= category.category_name %></span>
+
+                    </label>
+                <% }) %>
+
+            </div>
+
+            <button type="submit" class="btn-primary full-width">
+                Update Categories
+            </button>
+
+        </form>
+
+    </div>
+
+</main>
+
+<%- include('partials/footer') %>

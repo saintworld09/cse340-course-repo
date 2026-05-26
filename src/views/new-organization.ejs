@@ -1,0 +1,59 @@
+<%- include('partials/header') %>
+
+<main class="organization-page">
+
+    <div class="organization-container">
+
+        <h1 class="organization-title"><%= title %></h1>
+
+        <form action="/new-organization" method="POST" class="organization-form">
+
+            <div class="form-group">
+                <label for="name">Organization Name</label>
+
+                <input
+                    type="text"
+                    id="name"
+                    name="name"
+                    placeholder="Fieldmark Limited"
+                    required
+                    maxlength="150"
+                />
+            </div>
+
+            <div class="form-group">
+                <label for="description">Description</label>
+
+                <textarea
+                    id="description"
+                    name="description"
+                    rows="5"
+                    placeholder="We are known for.."
+                    required
+                    maxlength="500"
+                ></textarea>
+            </div>
+
+            <div class="form-group">
+                <label for="contactEmail">Contact Email</label>
+
+                <input
+                    type="email"
+                    id="contactEmail"
+                    name="contactEmail"
+                    placeholder="abc@gmail.com"
+                    required
+                />
+            </div>
+
+            <button type="submit" class="organization-btn">
+                Create Organization
+            </button>
+
+        </form>
+
+    </div>
+
+</main>
+
+<%- include('partials/footer') %>
