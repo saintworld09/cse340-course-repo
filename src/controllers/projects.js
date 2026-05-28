@@ -107,6 +107,18 @@ const showEditProjectForm = async (req, res) => {
 };
 
 const processEditProjectForm = async (req, res) => {
+    
+    const results = validationResult(req);
+
+    if (!results.isEmpty()) {
+
+        results.array().forEach((error) => {
+            req.flash('error', error.msg);
+        });
+
+        return res.redirect('/edit-project/' + req.params.id);
+    }
+    
     const projectId = req.params.id;
 
     const {

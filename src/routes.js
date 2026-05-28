@@ -83,7 +83,7 @@ router.post(
 
 router.get('/edit-project/:id', showEditProjectForm);
 
-router.post('/edit-project/:id', processEditProjectForm);
+router.post('/edit-project/:id', projectValidation,processEditProjectForm);
 
 // =======================
 // CATEGORY ROUTES
