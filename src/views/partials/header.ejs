@@ -6,33 +6,109 @@
     <title><%= title %></title>
     <link rel="stylesheet" href="/css/main.css">
 </head>
+
 <body>
-    <nav>
-    <ul>
-        <li><a href="/" class="<%= activePage === 'home' ? 'active' : '' %>">Home</a></li>
 
-        <li><a href="/organizations" class="<%= activePage === 'organizations' ? 'active' : '' %>">Organizations</a></li>
+<header class="site-header">
 
-        <li><a href="/projects" class="<%= activePage === 'projects' ? 'active' : '' %>">Projects</a></li>
+    <div class="logo-section">
+        <a href="/" class="site-logo">
+            Service Network
+        </a>
+    </div>
 
-        <li><a href="/categories" class="<%= activePage === 'categories' ? 'active' : '' %>">Categories</a></li>
-    </ul>
+    <nav class="navbar">
+
+        <!-- MAIN NAV LINKS -->
+        <ul class="nav-links">
+
+            <li>
+                <a href="/" class="<%= activePage === 'home' ? 'active' : '' %>">
+                    Home
+                </a>
+            </li>
+
+            <li>
+                <a href="/organizations" class="<%= activePage === 'organizations' ? 'active' : '' %>">
+                    Organizations
+                </a>
+            </li>
+
+            <li>
+                <a href="/projects" class="<%= activePage === 'projects' ? 'active' : '' %>">
+                    Projects
+                </a>
+            </li>
+
+            <li>
+                <a href="/categories" class="<%= activePage === 'categories' ? 'active' : '' %>">
+                    Categories
+                </a>
+            </li>
+
+        </ul>
+
+
+        <!-- AUTH + ROLE LINKS -->
+        <ul class="auth-links">
+
+            <% if (isLoggedIn) { %>
+
+                <!-- Dashboard always for logged-in users -->
+                <li>
+                    <a href="/dashboard" class="<%= activePage === 'dashboard' ? 'active' : '' %>">
+                        Dashboard
+                    </a>
+                </li>
+
+                <!-- ADMIN ONLY LINKS -->
+                <% if (user && user.role_name === 'admin') { %>
+                    <li>
+                        <a href="/new-organization">
+                            Admin Panel
+                        </a>
+                    </li>
+                <% } %>
+
+                <!-- LOGOUT -->
+                <li>
+                    <a href="/logout" class="logout-btn">
+                        Logout
+                    </a>
+                </li>
+
+            <% } else { %>
+
+                <!-- NOT LOGGED IN -->
+                <li>
+                    <a href="/register">
+                        Register
+                    </a>
+                </li>
+
+                <li>
+                    <a href="/login" class="login-btn">
+                        Login
+                    </a>
+                </li>
+
+            <% } %>
+
+        </ul>
+
     </nav>
 
-    <% const messages = flash(); %>
+</header>
+
+<!-- FLASH MESSAGES -->
+<% const messages = flash(); %>
 
 <% Object.keys(messages).forEach(type => { %>
-
     <% if (messages[type].length > 0) { %>
-
         <% messages[type].forEach(msg => { %>
-
             <div class="alert <%= type %>">
                 <%= msg %>
             </div>
-
         <% }) %>
-
     <% } %>
-
 <% }) %>

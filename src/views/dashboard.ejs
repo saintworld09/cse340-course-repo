@@ -1,0 +1,39 @@
+<%- include('partials/header') %>
+
+<main class="dashboard-page">
+
+    <div class="dashboard-container">
+
+        <h1><%= title %></h1>
+
+        <h2>Welcome Back</h2>
+
+        <p>
+            <strong>Name:</strong>
+            <%= name %>
+        </p>
+
+        <p>
+            <strong>Email:</strong>
+            <%= email %>
+        </p>
+
+        <% if (user && user.role_name === 'admin') { %>
+
+            <div class="admin-actions">
+
+                <h3>Administrator Tools</h3>
+
+                <a href="/users" class="admin-btn">
+                     Manage Users
+                </a>
+
+            </div>
+
+        <% } %>
+
+    </div>
+
+</main>
+
+<%- include('partials/footer') %>

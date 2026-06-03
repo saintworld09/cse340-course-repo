@@ -40,6 +40,14 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
+app.use(express.urlencoded({ extended: true }));
+
+app.use(session({
+    secret: 'cse340_secret_key_change_this',
+    resave: false,
+    saveUninitialized: false
+}));
+
 // Set EJS view engine
 app.set('view engine', 'ejs');
 
@@ -60,7 +68,18 @@ app.use((req, res, next) => {
  * GLOBAL VARIABLES
  */
 app.use((req, res, next) => {
+
+    res.locals.isLoggedIn = false;
+
+    if (req.session && req.session.user) {
+        res.locals.isLoggedIn = true;
+        res.locals.user = req.session.user;
+    } else {
+        res.locals.user = null;
+    }
+
     res.locals.NODE_ENV = NODE_ENV;
+
     next();
 });
 
@@ -92,6 +111,11 @@ app.use((req, res, next) => {
     const err = new Error('Page Not Found');
     err.status = 404;
     next(err);
+});
+
+app.use((req, res, next) => {
+    res.locals.session = req.session;
+    next();
 });
 
 /**

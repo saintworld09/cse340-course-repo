@@ -11,10 +11,27 @@ import {
 
 import { getProjectDetails } from '../models/projects.js';
 
+import { body } from 'express-validator';
+
+
+// =========================
+// VALIDATION
+// =========================
+export const categoryValidation = [
+    body('category_name')
+        .trim()
+        .notEmpty()
+        .withMessage('Category name is required')
+        .isLength({ min: 2 })
+        .withMessage('Category name must be at least 2 characters long')
+];
+
+
 // =========================
 // SHOW ALL CATEGORIES PAGE
 // =========================
 const showCategoriesPage = async (req, res) => {
+
     const categories = await getAllCategories();
 
     res.render('categories', {
@@ -24,10 +41,12 @@ const showCategoriesPage = async (req, res) => {
     });
 };
 
+
 // =========================
 // SHOW CATEGORY DETAILS PAGE
 // =========================
 const showCategoryDetailsPage = async (req, res) => {
+
     const categoryId = req.params.id;
 
     const category = await getCategoryById(categoryId);
@@ -41,6 +60,10 @@ const showCategoryDetailsPage = async (req, res) => {
     });
 };
 
+
+// =========================
+// ASSIGN CATEGORIES TO PROJECT
+// =========================
 const showAssignCategoriesForm = async (req, res) => {
 
     const projectId = req.params.projectId;
@@ -52,10 +75,8 @@ const showAssignCategoriesForm = async (req, res) => {
     const assignedCategories =
         await getCategoriesByProjectId(projectId);
 
-    const title = 'Assign Categories to Project';
-
     res.render('assign-categories', {
-        title,
+        title: 'Assign Categories to Project',
         projectId,
         projectDetails,
         categories,
@@ -64,6 +85,10 @@ const showAssignCategoriesForm = async (req, res) => {
     });
 };
 
+
+// =========================
+// CREATE CATEGORY FORM
+// =========================
 const showNewCategoryForm = (req, res) => {
 
     res.render('new-category', {
@@ -75,6 +100,9 @@ const showNewCategoryForm = (req, res) => {
 };
 
 
+// =========================
+// PROCESS CREATE CATEGORY
+// =========================
 const processNewCategoryForm = async (req, res) => {
 
     try {
@@ -87,11 +115,11 @@ const processNewCategoryForm = async (req, res) => {
             errors.push('Category name is required.');
         }
 
-        if (category_name.length > 100) {
+        if (category_name && category_name.length > 100) {
             errors.push('Category name must not exceed 100 characters.');
         }
 
-        if (category_name.length < 3) {
+        if (category_name && category_name.length < 3) {
             errors.push('Category name must be at least 3 characters.');
         }
 
@@ -108,7 +136,6 @@ const processNewCategoryForm = async (req, res) => {
         await createCategory(category_name);
 
         req.flash('success', 'Category created successfully.');
-
         res.redirect('/categories');
 
     } catch (error) {
@@ -116,17 +143,19 @@ const processNewCategoryForm = async (req, res) => {
         console.error(error);
 
         req.flash('error', 'Unable to create category.');
-
         res.redirect('/new-category');
     }
 };
 
+
+// =========================
+// EDIT CATEGORY FORM
+// =========================
 const showEditCategoryForm = async (req, res) => {
 
     try {
 
         const categoryId = req.params.id;
-
         const category = await getCategoryById(categoryId);
 
         res.render('edit-category', {
@@ -141,17 +170,19 @@ const showEditCategoryForm = async (req, res) => {
         console.error(error);
 
         req.flash('error', 'Unable to load category.');
-
         res.redirect('/categories');
     }
 };
 
+
+// =========================
+// PROCESS EDIT CATEGORY
+// =========================
 const processEditCategoryForm = async (req, res) => {
 
     try {
 
         const categoryId = req.params.id;
-
         const { category_name } = req.body;
 
         const errors = [];
@@ -160,11 +191,11 @@ const processEditCategoryForm = async (req, res) => {
             errors.push('Category name is required.');
         }
 
-        if (category_name.length > 100) {
+        if (category_name && category_name.length > 100) {
             errors.push('Category name must not exceed 100 characters.');
         }
 
-        if (category_name.length < 3) {
+        if (category_name && category_name.length < 3) {
             errors.push('Category name must be at least 3 characters.');
         }
 
@@ -184,7 +215,6 @@ const processEditCategoryForm = async (req, res) => {
         await updateCategory(categoryId, category_name);
 
         req.flash('success', 'Category updated successfully.');
-
         res.redirect('/categories');
 
     } catch (error) {
@@ -192,39 +222,34 @@ const processEditCategoryForm = async (req, res) => {
         console.error(error);
 
         req.flash('error', 'Unable to update category.');
-
         res.redirect(`/edit-category/${req.params.id}`);
     }
 };
 
 
+// =========================
+// ASSIGN CATEGORIES PROCESS
+// =========================
 const processAssignCategoriesForm = async (req, res) => {
 
     const projectId = req.params.projectId;
 
-    const selectedCategoryIds =
-        req.body.categoryIds || [];
+    const selectedCategoryIds = req.body.categoryIds || [];
 
-    const categoryIdsArray =
-        Array.isArray(selectedCategoryIds)
-            ? selectedCategoryIds
-            : [selectedCategoryIds];
+    const categoryIdsArray = Array.isArray(selectedCategoryIds)
+        ? selectedCategoryIds
+        : [selectedCategoryIds];
 
-    await updateCategoryAssignments(
-        projectId,
-        categoryIdsArray
-    );
+    await updateCategoryAssignments(projectId, categoryIdsArray);
 
-    req.flash(
-        'success',
-        'Categories updated successfully.'
-    );
-
+    req.flash('success', 'Categories updated successfully.');
     res.redirect(`/project/${projectId}`);
 };
 
 
-// Export controller functions
+// =========================
+// EXPORTS (CLEAN - NO DUPLICATES)
+// =========================
 export {
     showCategoriesPage,
     showCategoryDetailsPage,

@@ -1,0 +1,85 @@
+<%- include('partials/header') %>
+
+<main class="users-page">
+
+    <div class="users-container">
+
+        <div class="users-header">
+
+            <div>
+                <h1><%= title %></h1>
+                <p class="users-subtitle">
+                    View and manage all registered users in the system.
+                </p>
+            </div>
+
+            <div class="users-count">
+                Total Users: <strong><%= users.length %></strong>
+            </div>
+
+        </div>
+
+        <div class="table-wrapper">
+
+            <table class="users-table">
+
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Name</th>
+                        <th>Email Address</th>
+                        <th>Role</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+
+                    <% users.forEach(user => { %>
+
+                        <tr>
+
+                            <td>
+                                #<%= user.user_id %>
+                            </td>
+
+                            <td>
+                                <%= user.name %>
+                            </td>
+
+                            <td>
+                                <%= user.email %>
+                            </td>
+
+                            <td>
+
+                                <% if (user.role_name === 'admin') { %>
+
+                                    <span class="role-badge admin-role">
+                                        Admin
+                                    </span>
+
+                                <% } else { %>
+
+                                    <span class="role-badge user-role">
+                                        User
+                                    </span>
+
+                                <% } %>
+
+                            </td>
+
+                        </tr>
+
+                    <% }) %>
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+    </div>
+
+</main>
+
+<%- include('partials/footer') %>
