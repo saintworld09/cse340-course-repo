@@ -9,6 +9,13 @@ import {
     getCategoriesByProjectId
 } from '../models/categories.js';
 
+
+import {
+    volunteerForProject,
+    removeVolunteerFromProject,
+    isUserVolunteer
+} from '../models/volunteers.js';
+
 import { createProject } from '../models/projects.js';
 import { getAllOrganizations } from '../models/organizations.js';
 import { body, validationResult } from 'express-validator';
@@ -72,13 +79,28 @@ const showProjectDetailsPage = async (req, res) => {
     const project = await getProjectDetails(projectId);
     const categories = await getCategoriesByProjectId(projectId);
 
+    let volunteerStatus = false;
+
+    // check only if user is logged in
+    if (req.session && req.session.user) {
+        const { isUserVolunteer } = await import('../models/volunteers.js');
+
+        volunteerStatus = await isUserVolunteer(
+            req.session.user.user_id,
+            projectId
+        );
+    }
+
     res.render('project', {
         title: 'Project Details',
         project,
         categories,
-        activePage: 'projects'
+        activePage: 'projects',
+        isLoggedIn: !!req.session.user,
+        volunteerStatus
     });
 };
+
 
 const showNewProjectForm = async (req, res) => {
     const organizations = await getAllOrganizations();
@@ -176,6 +198,54 @@ const processNewProjectForm = async (req, res) => {
     res.redirect('/projects');
 };
 
+const volunteerForProjectAction = async (
+    req,
+    res
+) => {
+
+    const userId =
+        req.session.user.user_id;
+
+    const projectId =
+        req.params.id;
+
+    await volunteerForProject(
+        userId,
+        projectId
+    );
+
+    req.flash(
+        'success',
+        'You are now volunteering for this project.'
+    );
+
+    res.redirect(`/project/${projectId}`);
+};
+
+const removeVolunteerAction = async (
+    req,
+    res
+) => {
+
+    const userId =
+        req.session.user.user_id;
+
+    const projectId =
+        req.params.id;
+
+    await removeVolunteerFromProject(
+        userId,
+        projectId
+    );
+
+    req.flash(
+        'success',
+        'Volunteer registration removed.'
+    );
+
+    res.redirect(`/project/${projectId}`);
+};
+
 // Export controller functions
 export {
     showProjectsPage,
@@ -184,5 +254,7 @@ export {
     processNewProjectForm,
     projectValidation,
     showEditProjectForm,
-    processEditProjectForm
+    processEditProjectForm,
+    volunteerForProjectAction,
+    removeVolunteerAction
 };

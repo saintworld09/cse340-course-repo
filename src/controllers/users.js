@@ -1,12 +1,24 @@
 import bcrypt from 'bcrypt';
+
 import {
     getAllUsers,
     createUser,
     findUserByEmail
 } from '../models/users.js';
 
+import {
+    getVolunteerProjects
+} from '../models/volunteers.js';
+
+
+// =====================================
+// ADMIN USERS PAGE
+// =====================================
+
 export const showUsersPage = async (req, res) => {
+
     try {
+
         const users = await getAllUsers();
 
         res.render('users', {
@@ -16,21 +28,39 @@ export const showUsersPage = async (req, res) => {
         });
 
     } catch (error) {
+
         console.error(error);
-        req.flash('error', 'Unable to load users page.');
+
+        req.flash(
+            'error',
+            'Unable to load users page.'
+        );
+
         res.redirect('/dashboard');
     }
 };
 
 
-export const requireLogin = (req, res, next) => {
+// =====================================
+// LOGIN PROTECTION
+// =====================================
 
-    if (!req.session || !req.session.user) {
+export const requireLogin = (
+    req,
+    res,
+    next
+) => {
+
+    if (
+        !req.session ||
+        !req.session.user
+    ) {
 
         return res.render('login', {
             title: 'Login',
             activePage: 'login',
-            errorMessage: 'You must log in first.'
+            errorMessage:
+                'You must log in first.'
         });
     }
 
@@ -38,50 +68,112 @@ export const requireLogin = (req, res, next) => {
 };
 
 
-export const showDashboard = (req, res) => {
+// =====================================
+// DASHBOARD
+// =====================================
 
-    const user = req.session.user;
+export const showDashboard = async (
+    req,
+    res
+) => {
 
-    res.render('dashboard', {
-        title: 'Dashboard',
-        activePage: 'dashboard',
-        name: user.name,
-        email: user.email
+    try {
+
+        const user =
+            req.session.user;
+
+        const volunteerProjects =
+            await getVolunteerProjects(
+                user.user_id
+            );
+
+        res.render('dashboard', {
+            title: 'Dashboard',
+            activePage: 'dashboard',
+            name: user.name,
+            email: user.email,
+            volunteerProjects
+        });
+
+    } catch (error) {
+
+        console.error(error);
+
+        req.flash(
+            'error',
+            'Unable to load dashboard.'
+        );
+
+        res.redirect('/');
+    }
+};
+
+
+// =====================================
+// REGISTRATION PAGE
+// =====================================
+
+export const showUserRegistrationForm =
+(req, res) => {
+
+    res.render('register', {
+        title: 'User Registration',
+        activePage: 'register'
     });
 };
 
 
+// =====================================
+// PROCESS REGISTRATION
+// =====================================
 
-/**
- * Show registration form
- */
-export function showUserRegistrationForm(req, res) {
-    res.render('register', {
-        title: 'User Registration',
-        activePage: 'register'
-    }); 
-}
+export const processUserRegistrationForm =
+async (req, res) => {
 
-/**
- * Handle registration
- */
-export async function processUserRegistrationForm(req, res) {
     try {
-        const { name, email, password } = req.body;
+
+        const {
+            name,
+            email,
+            password
+        } = req.body;
 
         const saltRounds = 10;
-        const passwordHash = await bcrypt.hash(password, saltRounds);
 
-        await createUser(name, email, passwordHash);
+        const passwordHash =
+            await bcrypt.hash(
+                password,
+                saltRounds
+            );
 
-        return res.redirect('/login');
+        await createUser(
+            name,
+            email,
+            passwordHash
+        );
+
+        res.redirect('/login');
+
     } catch (error) {
-        console.error(error);
-        return res.status(500).send('Error registering user');
-    }
-}
 
-export const showLoginForm = (req, res) => {
+        console.error(error);
+
+        res.status(500).send(
+            'Error registering user'
+        );
+    }
+};
+
+
+// =====================================
+// LOGIN PAGE
+// =====================================
+
+export const showLoginForm = (
+    req,
+    res
+) => {
+
     res.render('login', {
         title: 'Login',
         activePage: 'login',
@@ -89,45 +181,77 @@ export const showLoginForm = (req, res) => {
     });
 };
 
-export const processLoginForm = async (req, res) => {
-    const { email, password } = req.body;
+
+// =====================================
+// PROCESS LOGIN
+// =====================================
+
+export const processLoginForm =
+async (req, res) => {
+
+    const {
+        email,
+        password
+    } = req.body;
 
     try {
-        const user = await authenticateUser(
-            email,
-            password
-        );
+
+        const user =
+            await authenticateUser(
+                email,
+                password
+            );
 
         if (user) {
+
             req.session.user = user;
 
-            console.log('User logged in:', user);
+            console.log(
+                'User logged in:',
+                user
+            );
 
-            return res.redirect('/dashboard');
+            return res.redirect(
+                '/dashboard'
+            );
         }
 
         return res.render('login', {
             title: 'Login',
             activePage: 'login',
-            errorMessage: 'Incorrect email or password'
-        })
+            errorMessage:
+                'Incorrect email or password'
+        });
 
     } catch (error) {
+
         console.error(error);
 
-        return res.redirect('login', {
+        return res.render('login', {
             title: 'Login',
             activePage: 'login',
-            errorMessage: 'An error occurred while logging in.'
+            errorMessage:
+                'An error occurred while logging in.'
         });
     }
 };
 
-export const processLogout = (req, res) => {
+
+// =====================================
+// LOGOUT
+// =====================================
+
+export const processLogout = (
+    req,
+    res
+) => {
+
     req.session.destroy((err) => {
 
         if (err) {
+
             console.error(err);
+
             return res.redirect('/');
         }
 
@@ -135,17 +259,29 @@ export const processLogout = (req, res) => {
     });
 };
 
-export async function authenticateUser(email, password) {
-    const user = await findUserByEmail(email);
+
+// =====================================
+// AUTHENTICATE USER
+// =====================================
+
+export const authenticateUser =
+async (
+    email,
+    password
+) => {
+
+    const user =
+        await findUserByEmail(email);
 
     if (!user) {
         return null;
     }
 
-    const passwordMatch = await bcrypt.compare(
-        password,
-        user.password_hash
-    );
+    const passwordMatch =
+        await bcrypt.compare(
+            password,
+            user.password_hash
+        );
 
     if (!passwordMatch) {
         return null;
@@ -154,18 +290,47 @@ export async function authenticateUser(email, password) {
     delete user.password_hash;
 
     return user;
-}
+};
 
-export const requireRole = (role) => {
-    return (req, res, next) => {
 
-        if (!req.session || !req.session.user) {
-            req.flash('error', 'You must be logged in.');
-            return res.redirect('/login');
+// =====================================
+// ROLE PROTECTION
+// =====================================
+
+export const requireRole = (
+    role
+) => {
+
+    return (
+        req,
+        res,
+        next
+    ) => {
+
+        if (
+            !req.session ||
+            !req.session.user
+        ) {
+
+            req.flash(
+                'error',
+                'You must be logged in.'
+            );
+
+            return res.redirect(
+                '/login'
+            );
         }
 
-        if (req.session.user.role_name !== role) {
-            req.flash('error', 'You are not authorized to access this page.');
+        if (
+            req.session.user.role_name !== role
+        ) {
+
+            req.flash(
+                'error',
+                'You are not authorized to access this page.'
+            );
+
             return res.redirect('/');
         }
 

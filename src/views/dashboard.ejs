@@ -8,15 +8,19 @@
 
         <h2>Welcome Back</h2>
 
-        <p>
-            <strong>Name:</strong>
-            <%= name %>
-        </p>
+        <div class="user-info-card">
 
-        <p>
-            <strong>Email:</strong>
-            <%= email %>
-        </p>
+            <p>
+                <strong>Name:</strong>
+                <%= name %>
+            </p>
+
+            <p>
+                <strong>Email:</strong>
+                <%= email %>
+            </p>
+
+        </div>
 
         <% if (user && user.role_name === 'admin') { %>
 
@@ -25,12 +29,89 @@
                 <h3>Administrator Tools</h3>
 
                 <a href="/users" class="admin-btn">
-                     Manage Users
+                    Manage Users
                 </a>
 
             </div>
 
         <% } %>
+
+        <div class="volunteer-projects-section">
+
+    <h3>My Volunteer Projects</h3>
+
+    <% if (!volunteerProjects || volunteerProjects.length === 0) { %>
+
+        <div class="empty-projects">
+
+            <p>
+                You have not volunteered for any projects yet.
+            </p>
+
+        </div>
+
+    <% } else { %>
+
+        <div class="volunteer-project-list">
+
+            <% volunteerProjects.forEach(project => { %>
+
+                <div class="volunteer-project-card">
+
+                    <h4>
+                        <%= project.title %>
+                    </h4>
+
+                    <p>
+                        <strong>Organization:</strong>
+                        <%= project.organization_name %>
+                    </p>
+
+                    <p>
+                        <strong>Location:</strong>
+                        <%= project.location %>
+                    </p>
+
+                    <p>
+                        <strong>Date:</strong>
+                        <%= new Date(project.date).toDateString() %>
+                    </p>
+
+                    <div class="project-actions">
+
+                        <a
+                            href="/project/<%= project.project_id %>"
+                            class="view-project-btn">
+
+                            View Project
+
+                        </a>
+
+                        <form
+                            action="/remove-volunteer/<%= project.project_id %>"
+                            method="POST">
+
+                            <button
+                                type="submit"
+                                class="remove-volunteer-btn">
+
+                                Remove Volunteer
+
+                            </button>
+
+                        </form>
+
+                    </div>
+
+                </div>
+
+            <% }) %>
+
+        </div>
+
+    <% } %>
+
+</div>
 
     </div>
 

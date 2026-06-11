@@ -194,3 +194,26 @@ CREATE TABLE users (
 
 alter table users
 alter column role_id set not null;
+
+CREATE TABLE project_volunteers (
+    volunteer_id SERIAL PRIMARY KEY,
+
+    user_id INTEGER NOT NULL,
+
+    project_id INTEGER NOT NULL,
+
+    volunteered_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+
+    CONSTRAINT fk_user
+        FOREIGN KEY (user_id)
+        REFERENCES users(user_id)
+        ON DELETE CASCADE,
+
+    CONSTRAINT fk_project
+        FOREIGN KEY (project_id)
+        REFERENCES service_project(project_id)
+        ON DELETE CASCADE,
+
+    CONSTRAINT unique_volunteer
+        UNIQUE(user_id, project_id)
+);

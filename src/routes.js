@@ -50,6 +50,13 @@ import {
     showUsersPage
 } from './controllers/users.js';
 
+
+import {
+    volunteerForProject,
+    removeVolunteerFromProject
+}
+from './controllers/volunteers.js';
+
 const router = express.Router();
 
 
@@ -184,6 +191,25 @@ router.post('/login', processLoginForm);
 router.get('/logout', processLogout);
 
 router.get('/users', requireRole('admin'), showUsersPage);
+
+
+// =======================
+// VOLUNTEER ROUTES
+// =======================
+
+
+
+router.post(
+    '/volunteer/:projectId',
+    requireLogin,
+    volunteerForProject
+);
+
+router.post(
+    '/remove-volunteer/:projectId',
+    requireLogin,
+    removeVolunteerFromProject
+);
 
 
 // =======================
